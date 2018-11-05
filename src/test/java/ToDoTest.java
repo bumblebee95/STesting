@@ -5,8 +5,14 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Testen der Klasse ToD0
+ */
 class ToDoTest {
 
+    /**
+     * Testen des Status eines ToDos.
+     */
     @Test
     void testToDoStatus() {
         String bez = "First todo is to do a todo";
@@ -18,16 +24,25 @@ class ToDoTest {
         assertEquals(Status.BEENDET, todo.getStatus());
     }
 
+    /**
+     * Testen der Bezeichnung eines ToDos
+     */
     @Test
     void testToDoBez(){
         String bez = "gummibärenbande";
         ToDo todo = new ToDo(bez);
         assertEquals(bez, todo.getBez());
+        todo.setBez("Neuer Titel");
+        assertEquals("Neuer Titel", todo.getBez());
     }
 
     @Test
     void testHash(){
         ToDo todo = new ToDo("test2");
+        assertEquals(todo.hashCode(), todo.getId());
+        todo.setId(56321421);
+        assertNotEquals(todo.hashCode(), todo.getId());
+        todo.setId(345623458);
         assertEquals(todo.hashCode(), todo.getId());
     }
 }
