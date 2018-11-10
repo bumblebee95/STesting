@@ -51,14 +51,15 @@ public class ToDoList extends ArrayList<ToDo> {
             for (ToDo todo: this){
                 br.write(todo.getId()+ ",");
                 br.write(todo.getBez() + ",");
+                br.write(todo.getInhalt() + ",");
                 br.write(todo.getStatus().toString());
                 br.newLine();
             }
             br.close();
             return true;
         }
-        catch(IOException ioe){
-            ioe.printStackTrace();
+        catch(Throwable ioe){
+            Logger.getLogger("ToDoLogger").log(Level.SEVERE, "Error while saving file: " + fileName + " | Exception: " + ioe.getMessage());
         }
         return false;
     }
@@ -74,12 +75,13 @@ public class ToDoList extends ArrayList<ToDo> {
             while (br.ready()){
                 String l = br.readLine();
                 String[] line = l.split(",");
-                if (line.length != 3){
+                if (line.length != 4){
                     Logger.getLogger("ToDoLogger").log(Level.WARNING, "Ungültige Zeile: " + l);
                 }
                 else {
                     ToDo todo = new ToDo(line[1]);
-                    todo.setStatus(Status.valueOf(line[2]));
+                    todo.setInhalt(line[2]);
+                    todo.setStatus(Status.valueOf(line[3]));
                     todo.setId(Integer.parseInt(line[0]));
                     this.add(todo);
                 }
@@ -87,8 +89,8 @@ public class ToDoList extends ArrayList<ToDo> {
             br.close();
             return true;
         }
-        catch(IOException ioe){
-            ioe.printStackTrace();
+        catch(Throwable ioe){
+            Logger.getLogger("ToDoLogger").log(Level.SEVERE, "Error while loading file: " + fileName + " | Exception: " + ioe.getMessage());
         }
         return false;
     }

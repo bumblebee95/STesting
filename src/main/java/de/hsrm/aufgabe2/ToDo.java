@@ -1,4 +1,6 @@
 package de.hsrm.aufgabe2;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Tod0 ist ein Eintrag innerhalb einer ToDoList
@@ -21,11 +23,14 @@ public class ToDo {
      */
     public ToDo(String bez){
         if (bez == null || bez.trim().isEmpty()){
-            System.err.println("Bezeichnung cannot be null or empty!");
+            Logger.getLogger("ToDoLogger").log(Level.WARNING, "Bezeichnung cannot be null");
+            //setzte bezeichnung auf leer - notfall
+            bez = "";
         }
         this.bez = bez;
         status = Status.OFFEN;
         id = this.hashCode();
+        inhalt = "";
     }
 
     /**

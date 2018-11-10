@@ -1,3 +1,4 @@
+package de.hsrm.aufgabe2.tests;
 
 import de.hsrm.aufgabe2.Status;
 import de.hsrm.aufgabe2.ToDo;
