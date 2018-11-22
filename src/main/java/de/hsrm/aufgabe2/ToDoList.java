@@ -2,6 +2,10 @@ package de.hsrm.aufgabe2;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -41,25 +45,48 @@ public class ToDoList extends ArrayList<ToDo> {
     }
 
     /**
+     * Es wird eine neue Sortierte Liste zurückgegeben.
+     * Dabei wird anhand von compareTo sortiert.
+     * @return neue sortierte Liste
+     */
+    public ToDoList getSortedList(){
+        ToDoList retList = this;
+        retList.sort((t1, t2) -> t1.compareTo(t2));
+        return retList;
+    }
+
+    public ToDoList getFilteredList(){
+        ToDoList retList = this;
+        retList.stream().filter(t -> Status.OFFEN.equals(t.getStatus()));
+
+        return retList;
+    }
+
+    /**
      * Speichert die aktuelle Liste als CSV Datei.
      * @param fileName dateiname
      * @return true wenn speichern erfolgreich, false wenn nicht
      */
     public boolean save(String fileName){
-        try {
-            BufferedWriter br = new BufferedWriter(new FileWriter(fileName));
-            for (ToDo todo: this){
-                br.write(todo.getId()+ ",");
-                br.write(todo.getBez() + ",");
-                br.write(todo.getInhalt() + ",");
-                br.write(todo.getStatus().toString());
-                br.newLine();
+        if (this.size()>0){
+            try {
+                BufferedWriter br = new BufferedWriter(new FileWriter(fileName));
+                for (ToDo todo: this){
+                    br.write(todo.getId()+ ",");
+                    br.write(todo.getBez() + ",");
+                    br.write(todo.getInhalt() + ",");
+                    br.write(todo.getStatus().toString());
+                    br.newLine();
+                }
+                br.close();
+                return true;
             }
-            br.close();
-            return true;
+            catch(Throwable ioe){
+                Logger.getLogger("ToDoLogger").log(Level.SEVERE, "Error while saving file: " + fileName + " | Exception: " + ioe.getMessage());
+            }
         }
-        catch(Throwable ioe){
-            Logger.getLogger("ToDoLogger").log(Level.SEVERE, "Error while saving file: " + fileName + " | Exception: " + ioe.getMessage());
+        else {
+            Logger.getLogger("ToDoLogger").log(Level.INFO, "List empty, please add some ToDos");
         }
         return false;
     }

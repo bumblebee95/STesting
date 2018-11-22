@@ -23,6 +23,9 @@ class ToDoTest {
         assertEquals(Status.IN_ARBEIT, todo.getStatus());
         todo.setStatus(Status.BEENDET);
         assertEquals(Status.BEENDET, todo.getStatus());
+        //nach offen geht nicht mehr, deswegen muss auf beendet bleiben
+        todo.setStatus(Status.OFFEN);
+        assertEquals(Status.BEENDET, todo.getStatus());
     }
 
     /**

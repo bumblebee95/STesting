@@ -3,7 +3,11 @@ package de.hsrm.aufgabe2.tests;
 import de.hsrm.aufgabe2.Status;
 import de.hsrm.aufgabe2.ToDo;
 import de.hsrm.aufgabe2.ToDoList;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+
+import java.io.FileNotFoundException;
+import java.util.Iterator;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -24,12 +28,118 @@ class ToDoListTest {
         ToDo todo3 = new ToDo("ToDo3");
         todoList.add(todo3);
         assertEquals(3, todoList.getOpenEntries());
+        todo3.setStatus(Status.IN_ARBEIT);
         todo3.setStatus(Status.BEENDET);
         assertEquals(2, todoList.getOpenEntries());
         todoList.remove(todo3);
         assertEquals(2, todoList.getOpenEntries());
         todoList.remove(todo1);
         assertEquals(1, todoList.getOpenEntries());
+    }
+
+    /**
+     * Teste das Entfernen eines Elements, welches in der Liste existiert.
+     */
+    @Test
+    void testRemoveExistingElement(){
+        ToDoList list = new ToDoList();
+        ToDo t = new ToDo("lala");
+        list.add(t);
+        assertTrue(list.remove(t));
+    }
+
+    /**
+     * Teste das Entfernen eines Elements, welches !nicht! in der Liste existiert.
+     */
+    @Test
+    void testRemoveNotExistingElement(){
+        ToDoList list = new ToDoList();
+        ToDo t = new ToDo("lala");
+        assertFalse(list.remove(t));
+    }
+
+    /**
+     * IN einer leeren Liste müssen genau 0 offene Todos sein
+     */
+    @Test
+    void testGetOpenToDosOfEmptyList() {
+        assertTrue(new ToDoList().getOpenEntries() == 0);
+    }
+
+    /**
+     * Leere Liste muss die größe 0 haben
+     */
+    @Test
+    void testEmptyListSizeNull(){
+        assertTrue(new ToDoList().size() == 0);
+    }
+
+    @Test
+    void twoEntryAreSame(){
+        ToDo t1 = new ToDo("1");
+        t1.setInhalt("Inhalt");
+        ToDo t2 = new ToDo("1");
+        t2.setInhalt("Inhalt");
+        ToDoList list = new ToDoList();
+        list.add(t1);
+        list.add(t2);
+
+        assertEquals(0, list.get(0).compareTo(list.get(1)));
+    }
+
+    @Test
+    void twoEntryAreNotSame(){
+        ToDo t1 = new ToDo("1");
+        t1.setInhalt("Inhalt");
+        ToDo t2 = new ToDo("2");
+        t2.setInhalt("Inhalt");
+        ToDoList list = new ToDoList();
+        list.add(t1);
+        list.add(t2);
+
+        assertEquals(-1, list.get(0).compareTo(list.get(1)));
+    }
+
+    @Test
+    void testStatusOffenToInArbeit(){
+        ToDo t1 = new ToDo("1");
+        t1.setStatus(Status.IN_ARBEIT);
+        assertEquals(Status.IN_ARBEIT,t1.getStatus());
+    }
+
+    @Test
+    void testStatusBeendetToOffen(){
+        ToDo t1 = new ToDo("1");
+        t1.setStatus(Status.IN_ARBEIT);
+        t1.setStatus(Status.BEENDET);
+        t1.setStatus(Status.OFFEN);
+        assertNotEquals(Status.OFFEN,t1.getStatus());
+    }
+
+    /**
+     * Teste eine Liste auf das Entfernen aller Elemente
+     */
+    @Test
+    void testDeleteAllEntries() {
+        ToDoList todoList = new ToDoList();
+        ToDo todo1 = new ToDo("Todo1");
+        todo1.setInhalt("Dies ist ein Test");
+        todoList.add(todo1);
+        todo1.setStatus(Status.BEENDET);
+        todoList.add(new ToDo(("Todo2")));
+        ToDo todo3 = new ToDo("Todo3");
+        todo3.setInhalt("3+3=6");
+        todo3.setStatus(Status.IN_ARBEIT);
+        todoList.add(todo3);
+
+        //Entferne alle Elemente mittels Iterator
+        Iterator it = todoList.iterator();
+        while (it.hasNext()){
+            it.next();
+            it.remove();
+        }
+
+        assertEquals(0, todoList.size());
     }
 
     /**
@@ -41,7 +151,6 @@ class ToDoListTest {
         ToDo todo1 = new ToDo("Todo1");
         todo1.setInhalt("Dies ist ein Test");
         todoList.add(todo1);
-        todo1.setStatus(Status.BEENDET);
         todoList.add(new ToDo(("Todo2")));
         ToDo todo3 = new ToDo("Todo3");
         todo3.setInhalt("3+3=6");
@@ -70,5 +179,49 @@ class ToDoListTest {
 
     }
 
+    @Test
+    void testTrySaveEmptyList(){
+        ToDoList list = new ToDoList();
+        assertFalse(list.save("wirdEhNichtGespeichert.csv"));
+    }
 
+    @Test
+    void testGetSortedList(){
+        ToDoList todoList = new ToDoList();
+        ToDo todo1 = new ToDo("Todo1");
+        todo1.setInhalt("Dies ist ein Test");
+
+        todoList.add(new ToDo(("Todo2")));
+        ToDo todo3 = new ToDo("Todo3");
+        todo3.setInhalt("3+3=6");
+        todo3.setStatus(Status.IN_ARBEIT);
+        todoList.add(new ToDo(("Todo4")));
+        todoList.add(todo3);
+        ToDo todo4 = new ToDo("Trala");
+        todo4.setStatus(Status.IN_ARBEIT);
+        todo4.setStatus(Status.BEENDET);
+        todo4.setInhalt("ab");
+        ToDo todo5 = new ToDo("Trala");
+        todo5.setInhalt("aa");
+        todo5.setStatus(Status.IN_ARBEIT);
+        todo5.setStatus(Status.BEENDET);
+        todoList.add(todo5);
+        todoList.add(todo4);
+        todoList.add(todo1);
+
+        todoList = todoList.getSortedList();
+
+        assertEquals(Status.OFFEN, todoList.get(0).getStatus());
+        assertEquals(Status.OFFEN, todoList.get(1).getStatus());
+        assertEquals(Status.OFFEN, todoList.get(2).getStatus());
+        assertEquals(Status.IN_ARBEIT, todoList.get(3).getStatus());
+        assertEquals(Status.BEENDET, todoList.get(4).getStatus());
+        assertEquals(Status.BEENDET, todoList.get(5).getStatus());
+
+        assertEquals("Trala", todoList.get(5).getBez());
+        assertEquals("Todo3", todoList.get(3).getBez());
+
+        assertEquals("aa", todoList.get(4).getInhalt());
+        assertEquals("ab", todoList.get(5).getInhalt());
+    }
 }

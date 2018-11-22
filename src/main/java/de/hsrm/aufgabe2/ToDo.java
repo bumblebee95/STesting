@@ -5,7 +5,7 @@ import java.util.logging.Logger;
 /**
  * Tod0 ist ein Eintrag innerhalb einer ToDoList
  */
-public class ToDo {
+public class ToDo implements Comparable<ToDo> {
 
     /** Die Bezeichnung des ToDos - der Titel. */
     private String bez;
@@ -24,7 +24,7 @@ public class ToDo {
     public ToDo(String bez){
         if (bez == null || bez.trim().isEmpty()){
             Logger.getLogger("ToDoLogger").log(Level.WARNING, "Bezeichnung cannot be null");
-            //setzte bezeichnung auf leer - notfall
+            //setzte bezeichnung auf leer
             bez = "";
         }
         this.bez = bez;
@@ -90,7 +90,9 @@ public class ToDo {
      * @param status status anhand enum
      */
     public void setStatus(Status status) {
-        this.status = status;
+        if (this.getStatus().canSwitchTo(status)) {
+            this.status = status;
+        }
     }
 
     /**
@@ -104,5 +106,47 @@ public class ToDo {
             return super.hashCode();
         }
         return id;
+    }
+
+    /**
+     * Vergleicht nach folgendem Schema:
+     *      - Zuerst ordnen nach Status, falls dieser identisch ist
+     *      - vergleich und sortierung nach bezeichnung(Titel), falls auch dieser identisch ist
+     *      - vergleich und sortierung nach Inhalt
+     *
+     * @param o zu vergleichendes objekt (todo)
+     * @return 1 wenn o vor this und -1 wenn o nach this
+     */
+    @Override
+    public int compareTo(ToDo o) {
+        int res = -1;
+        //safety check
+        if (o instanceof ToDo) {
+            if (o.getStatus() == this.getStatus()) {
+                if (this.getBez().equals(o.getBez())){
+                    res = this.getInhalt().compareToIgnoreCase(o.getInhalt());
+                }
+                else {
+                    res = this.getBez().compareToIgnoreCase(o.getBez());
+                }
+            }
+            else if ((o.getStatus() == Status.OFFEN) || (o.getStatus() == Status.IN_ARBEIT && this.getStatus() == Status.BEENDET) ){
+                res = 1;
+            }
+            else if ((this.getStatus() == Status.OFFEN) || (this.getStatus() == Status.IN_ARBEIT && o.getStatus() == Status.BEENDET) ){
+                res = -1;
+            }
+        }
+        return res;
+    }
+
+    @Override
+    public String toString() {
+        StringBuffer buf = new StringBuffer();
+        buf.append("Id: " + this.getId() + " \n");
+        buf.append("Titel: " + this.getBez() + " \n");
+        buf.append("Status: " + this.getStatus() + " \n");
+        buf.append("Inhalt: " + this.getInhalt() + " \n");
+        return buf.toString();
     }
 }
