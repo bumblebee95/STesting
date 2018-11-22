@@ -63,7 +63,7 @@ class ToDoListTest {
      */
     @Test
     void testGetOpenToDosOfEmptyList() {
-        assertTrue(new ToDoList().getOpenEntries() == 0);
+        assertEquals(0, new ToDoList().getOpenEntries());
     }
 
     /**
@@ -71,7 +71,7 @@ class ToDoListTest {
      */
     @Test
     void testEmptyListSizeNull(){
-        assertTrue(new ToDoList().size() == 0);
+        assertEquals(0,new ToDoList().size());
     }
 
     @Test
@@ -223,5 +223,39 @@ class ToDoListTest {
 
         assertEquals("aa", todoList.get(4).getInhalt());
         assertEquals("ab", todoList.get(5).getInhalt());
+    }
+
+    @Test
+    void testFilterList(){
+        ToDoList todoList = new ToDoList();
+        ToDo todo1 = new ToDo("Todo1");
+        todo1.setInhalt("Dies ist ein Test");
+
+        todoList.add(new ToDo(("Todo2")));
+        ToDo todo3 = new ToDo("Todo3");
+        todo3.setInhalt("3+3=6");
+        todo3.setStatus(Status.IN_ARBEIT);
+        todoList.add(new ToDo(("Todo4")));
+        todoList.add(todo3);
+        ToDo todo4 = new ToDo("Trala");
+        todo4.setStatus(Status.IN_ARBEIT);
+        todo4.setStatus(Status.BEENDET);
+        todo4.setInhalt("ab");
+        ToDo todo5 = new ToDo("Trala");
+        todo5.setInhalt("aa");
+        todo5.setStatus(Status.IN_ARBEIT);
+        todo5.setStatus(Status.BEENDET);
+        todoList.add(todo5);
+        todoList.add(todo4);
+        todoList.add(todo1);
+
+        ToDoList open = todoList.getStatusFilteredList(Status.OFFEN);
+        assertEquals(3, open.size());
+
+        ToDoList inwork = todoList.getStatusFilteredList(Status.IN_ARBEIT);
+        assertEquals(1, inwork.size());
+
+        ToDoList beendet = todoList.getStatusFilteredList(Status.BEENDET);
+        assertEquals(2, beendet.size());
     }
 }

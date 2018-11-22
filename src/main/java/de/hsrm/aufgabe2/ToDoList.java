@@ -2,10 +2,6 @@ package de.hsrm.aufgabe2;
 
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -55,11 +51,14 @@ public class ToDoList extends ArrayList<ToDo> {
         return retList;
     }
 
-    public ToDoList getFilteredList(){
-        ToDoList retList = this;
-        retList.stream().filter(t -> Status.OFFEN.equals(t.getStatus()));
-
-        return retList;
+    /**
+     * Es wird eine neue nach status gefilterte Liste zurückgegeben.
+     * @return neue gefilterte Liste
+     */
+    public ToDoList getStatusFilteredList(Status status){
+        ToDoList result = new ToDoList();
+        this.stream().filter(t -> t.getStatus() == status).forEach(t -> result.add(t));
+        return result;
     }
 
     /**

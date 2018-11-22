@@ -133,16 +133,17 @@ public class ToDo implements Comparable<ToDo> {
             else if ((o.getStatus() == Status.OFFEN) || (o.getStatus() == Status.IN_ARBEIT && this.getStatus() == Status.BEENDET) ){
                 res = 1;
             }
-            else if ((this.getStatus() == Status.OFFEN) || (this.getStatus() == Status.IN_ARBEIT && o.getStatus() == Status.BEENDET) ){
-                res = -1;
-            }
         }
         return res;
     }
 
+    /**
+     * Just for testcase
+     * @return formatted string
+     */
     @Override
     public String toString() {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         buf.append("Id: " + this.getId() + " \n");
         buf.append("Titel: " + this.getBez() + " \n");
         buf.append("Status: " + this.getStatus() + " \n");
