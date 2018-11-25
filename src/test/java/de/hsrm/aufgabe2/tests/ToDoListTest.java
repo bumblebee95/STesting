@@ -3,10 +3,7 @@ package de.hsrm.aufgabe2.tests;
 import de.hsrm.aufgabe2.Status;
 import de.hsrm.aufgabe2.ToDo;
 import de.hsrm.aufgabe2.ToDoList;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-
-import java.io.FileNotFoundException;
 import java.util.Iterator;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -74,6 +71,9 @@ class ToDoListTest {
         assertEquals(0,new ToDoList().size());
     }
 
+    /**
+     * Test auf zwei Todos, die inhaltlich gleich sind
+     */
     @Test
     void twoEntryAreSame(){
         ToDo t1 = new ToDo("1");
@@ -87,6 +87,9 @@ class ToDoListTest {
         assertEquals(0, list.get(0).compareTo(list.get(1)));
     }
 
+    /**
+     * Test auf zwei Todos, die inhaltlich nicht gleich sind
+     */
     @Test
     void twoEntryAreNotSame(){
         ToDo t1 = new ToDo("1");
@@ -100,6 +103,9 @@ class ToDoListTest {
         assertEquals(-1, list.get(0).compareTo(list.get(1)));
     }
 
+    /**
+     * Test ob man den Status von Offen auf IN_ARBEIT ändern kann
+     */
     @Test
     void testStatusOffenToInArbeit(){
         ToDo t1 = new ToDo("1");
@@ -107,6 +113,9 @@ class ToDoListTest {
         assertEquals(Status.IN_ARBEIT,t1.getStatus());
     }
 
+    /**
+     * Test darauf, dass ein Wechsel von Beendet nach Offen fehlschlägt
+     */
     @Test
     void testStatusBeendetToOffen(){
         ToDo t1 = new ToDo("1");
@@ -179,12 +188,19 @@ class ToDoListTest {
 
     }
 
+    /**
+     * Testen des Speicherns einer leeren Liste.
+     */
     @Test
     void testTrySaveEmptyList(){
         ToDoList list = new ToDoList();
         assertFalse(list.save("wirdEhNichtGespeichert.csv"));
     }
 
+    /**
+     * Testen auf das Sortieren einer Liste.
+     * Wird mittels compareTo sortiert, also nach Status, dann Titel....
+     */
     @Test
     void testGetSortedList(){
         ToDoList todoList = new ToDoList();
@@ -225,6 +241,9 @@ class ToDoListTest {
         assertEquals("ab", todoList.get(5).getInhalt());
     }
 
+    /**
+     * Test des Filterns nach Status.
+     */
     @Test
     void testFilterList(){
         ToDoList todoList = new ToDoList();
